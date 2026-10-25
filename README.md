@@ -30,7 +30,7 @@ cd ~/android-sdk/cmdline-tools/latest/bin
 # 3) 之后把 SDK 放到 ~/android/android-sdk（或用环境变量 SDK= 指向你的 SDK 目录）
 ```
 
-构建只需以上两样；往电视安装还需要 adb（platform-tools 已含）。
+构建只需以上两样；只装不构建的话，直接下载 [Releases](../../releases) 里的 APK，配好下文的 adb 即可。
 
 ## 构建
 
@@ -46,18 +46,45 @@ cd ~/android-sdk/cmdline-tools/latest/bin
 
 ## 安装到电视
 
-```sh
-# 1) 电视端开 ADB：设置 → 账号与安全 → ADB 调试（CN 固件每次重启后需重开）
-adb connect <电视IP>:5555
+### 前置工具（安装机，即你的电脑）
 
-# 2) 安装
+安装只需要 adb（Android platform-tools），三选一：
+
+```sh
+# macOS（Homebrew）
+brew install --cask android-platform-tools
+
+# 或官方包（macOS / Windows / Linux 通用）：
+# https://developer.android.com/tools/releases/platform-tools 下载 zip 解压，
+# 解压目录里的 adb 直接可用（Windows 为 adb.exe）
+
+# Linux (Debian/Ubuntu)
+sudo apt install adb
+
+adb version    # 确认输出 adb 版本即可
+```
+
+### 电视端开启 ADB
+
+小米电视 CN 固件：**遥控器进入 设置 → 账号与安全 → ADB 调试 → 开启**（首次开启会弹确认）。
+
+⚠️ 注意：**小米电视每次重启后 ADB 会自动关闭**，需要时用遥控器重新打开。
+
+### 连接与安装
+
+```sh
+# 电视 IP 查看路径：设置 → 关于 → 网络信息（需与电脑同网段）
+adb connect <电视IP>:5555
+adb devices                        # 看到 <电视IP>:5555  device 即连接成功
+
+# 安装
 adb install -r GzTv.apk
 
-# 3) 设为默认桌面（利用 CN 固件 HOME 白名单身份 com.ts.launcher）
+# 设为默认桌面（利用 CN 固件 HOME 白名单身份 com.ts.launcher）
 adb shell cmd package set-home-activity com.ts.launcher/.HomeActivity
 ```
 
-重启电视即开机直达直播。`adb shell am start -n com.ts.launcher/.HomeActivity` 可先行试用。
+不想立刻接管桌面可先试用：`adb shell am start -n com.ts.launcher/.HomeActivity`。重启电视即开机直达直播。
 
 ## 卸载 / 恢复原桌面
 
