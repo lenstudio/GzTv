@@ -1,0 +1,9 @@
+*.apk
+*.idsig
+classes/
+dexout/
+unsigned.apk
+aligned.apk
+.DS_Store
+release.keystore
+release.keystore.pass
